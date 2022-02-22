@@ -1,0 +1,73 @@
+Given a binary tree, write code to create a separate linked list for each level. You need to return the array which contains head of each level linked list.
+Input format :
+The first line of input contains data of the nodes of the tree in level order form. The data of the nodes of the tree is separated by space. If any node does not have left or right child, take -1 in its place. Since -1 is used as an indication whether the left or right nodes exist, therefore, it will not be a part of the data of any node.
+Output format :
+Each level linked list is printed in new line (elements are separated by space).
+Constraints:
+Time Limit: 1 second
+Sample Input 1:
+5 6 10 2 3 -1 -1 -1 -1 -1 9 -1 -1
+Sample Output 1:
+5 
+6 10 
+2 3 
+9
+
+
+vector<Node<int>*> constructLinkedListForEachLevel(BinaryTreeNode<int> *root) {
+    // Write your code here
+    if(root==NULL){
+        vector<Node<int>*> output;
+        output.push_back(NULL);
+        return output;
+    }
+    queue<BinaryTreeNode<int>*> q;
+    q.push(root);
+    
+    int currlevelRemaining = 1;
+    int nxtLevelCount = 0;
+
+    vector<Node<int>*> output;
+    
+    Node<int> *currLevelHead = NULL;
+    Node<int> *currLevelTail = NULL;
+    
+    while(!q.empty()){
+        
+        BinaryTreeNode<int> *first = q.front();
+        q.pop();
+        
+        Node<int> *newNode = new Node<int>(first -> data);
+        
+        if(currLevelHead == NULL){
+            currLevelHead = newNode;
+            currLevelTail = newNode;
+        }
+        
+        else{
+            currLevelTail -> next = newNode;
+            currLevelTail = newNode; 
+        }
+        
+        if(first -> left != NULL){
+            q.push(first -> left);
+            nxtLevelCount++;
+        }
+        
+        if(first -> right != NULL){
+            q.push(first -> right);
+            nxtLevelCount++;
+        }
+        
+        currlevelRemaining --;
+        
+        if(currlevelRemaining == 0){
+            output.push_back(currLevelHead);
+            currLevelHead = NULL;
+            currLevelTail = NULL;
+            currlevelRemaining = nxtLevelCount;
+            nxtLevelCount = 0;
+        }
+    }
+    return output;
+}
